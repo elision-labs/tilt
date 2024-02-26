@@ -1,7 +1,19 @@
-import { Providers } from './providers'
+import '@/styles/globals.css'
+import '@rainbow-me/rainbowkit/styles.css';
+import { Providers } from '@/app/providers'
+import { Inter } from "next/font/google"
+
+import { cn } from "@/lib/utils"
+
+export const inter = Inter({
+  style: "normal",
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-mono",
+})
 
 export const metadata = {
-  title: 'wagmi',
+  title: 'tilt',
 }
 
 export default function RootLayout({
@@ -11,7 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.variable
+        )}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
