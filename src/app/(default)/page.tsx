@@ -43,8 +43,6 @@ export default function Page() {
         <div>{status}</div>
         <div>{error?.message}</div>
       </div>
-      <CreateChallenge />
-      <ChallengeList />
     </>
   )
 }

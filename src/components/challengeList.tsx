@@ -15,24 +15,34 @@ import { registryAbi } from "@/lib/abi/ChallengeRegistry"
 import { Loader2 } from "lucide-react"
 import { tokenAbi } from "@/lib/abi/ChallengeToken"
 import { Skeleton } from "@/components/ui/skeleton"
+import { AwardChallenge } from "./awardChallenge"
 
 
 type ChallengeRowProps = {
     address: `0x${string}`
 }
 function ChallengeRow({ address }: ChallengeRowProps) {
-    const { data: details, isPending, isError } = useReadContract({
+    const details = useReadContract({
         address,
         abi: tokenAbi,
         functionName: 'getChallengeDetails'
     })
 
+    const awardedCount = useReadContract({
+        address,
+        abi: tokenAbi,
+        functionName: 'getChallengesAwarded'
+    })
+
     return (
         <TableRow key={address}>
             {
-                isPending ?
+                details.isPending || awardedCount.isPending ?
                     <>
                         <TableCell >
+                            <Skeleton className="h-4 w-full" />
+                        </TableCell>
+                        <TableCell>
                             <Skeleton className="h-4 w-full" />
                         </TableCell>
                         <TableCell>
@@ -48,13 +58,20 @@ function ChallengeRow({ address }: ChallengeRowProps) {
                     :
                     <>
                         {
-                            details &&
+                            details.data &&
                             <>
-                                <TableCell className="font-medium">{details[0]}</TableCell>
-                                <TableCell>{details[1]}</TableCell>
-                                <TableCell>{details[2]}</TableCell>
+                                <TableCell className="font-medium">{details.data[0]}</TableCell>
+                                <TableCell>{details.data[1]}</TableCell>
+                                <TableCell>
+                                    <a href={details.data[2]} target="_blank" rel="noopener noreferrer">
+                                        {details.data[2]}
+                                    </a>
+                                </TableCell>
+                                <TableCell>
+                                    {awardedCount.data?.toString()}
+                                </TableCell>
                                 <TableCell className="text-right">
-                                    <Button>Award Challenge</Button>
+                                    <AwardChallenge address={address} />
                                 </TableCell>
                             </>
                         }
@@ -68,12 +85,14 @@ function ChallengeRow({ address }: ChallengeRowProps) {
 
 export function ChallengeList() {
     const { data: walletClient } = useWalletClient()
-    const { data: challenges, isPending, isError } = useReadContract({
+    const { data: challenges, isPending } = useReadContract({
         address: '0x17976411b5CbdE3b6EB47B8BB43c94C0f0306aa5',
         abi: registryAbi,
         functionName: 'getOwnedChallenges',
         account: walletClient?.account,
     })
+
+    console.log('Challenges: ', challenges)
 
     return (
         <Table>
@@ -83,6 +102,7 @@ export function ChallengeList() {
                     <TableHead>Title</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>ImageURL</TableHead>
+                    <TableHead># Awarded</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,12 +125,6 @@ export function ChallengeList() {
                         </>
                 }
             </TableBody>
-            {/* <TableFooter>
-                <TableRow>
-                    <TableCell colSpan={3}>Total</TableCell>
-                    <TableCell className="text-right">$2,500.00</TableCell>
-                </TableRow>
-            </TableFooter> */}
         </Table>
     )
 }
