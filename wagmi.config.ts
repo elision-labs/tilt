@@ -1,7 +1,22 @@
-import { defineConfig } from '@wagmi/cli'
-import { foundry, react } from '@wagmi/cli/plugins'
+import { Config } from 'wagmi';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { arbitrum, base, mainnet, optimism, polygon, sepolia, zora } from 'wagmi/chains';
+import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
-export default defineConfig({
-  out: 'src/generated.ts',
-  plugins: [react()],
-})
+const { wallets } = getDefaultWallets()
+
+export const config: Config = getDefaultConfig({
+  appName: 'RainbowKit App',
+  chains: [
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
+    base,
+    zora,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
+  ],
+  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+  ssr: true,
+  wallets: [...wallets]
+});

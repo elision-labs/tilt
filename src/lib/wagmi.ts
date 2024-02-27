@@ -12,7 +12,7 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 export const config: Config = getDefaultConfig({
   appName: 'RainbowKit App',
-  projectId: 'tilt',
+  projectId: '66f788605cfc854158ab7b084690b624',
   chains: [
     mainnet,
     polygon,
@@ -22,6 +22,7 @@ export const config: Config = getDefaultConfig({
     zora,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
   ],
+  wallets: [],
   ssr: true,
 });
 
