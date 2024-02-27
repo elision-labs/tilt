@@ -1,6 +1,8 @@
 'use client'
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { ChallengeList } from '@/components/challengeList'
+import { CreateChallenge } from '@/components/createChallenge'
+import { useAccount, useConnect, useDisconnect, useWriteContract } from 'wagmi'
 
 export default function Page() {
   const account = useAccount()
@@ -41,6 +43,8 @@ export default function Page() {
         <div>{status}</div>
         <div>{error?.message}</div>
       </div>
+      <CreateChallenge />
+      <ChallengeList />
     </>
   )
 }
